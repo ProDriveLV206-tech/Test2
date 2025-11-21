@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>games.html</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/firebase_init.js"></script><script src="js/auth.js"></script></head><body class="theme-dark"><div class="app"><aside class="sidebar"><div class="logo"><img src="assets/server_logo.svg" style="width:48px;height:48px"></div><a class="icon" href="chat.html">🏠</a><a class="icon" href="dm.html">💬</a><a class="icon" href="friends.html">👥</a><a class="icon" href="games.html">🎮</a><a class="icon" href="notifications.html">🔔</a></aside><div class="main"><div class="header"><div class="server-title">ChatPack</div></div><div class="content"><div class="channels" style="display:none"></div><div class="chat-area"><header style="padding:12px;background:var(--card)">ChatPack</header><main class="container"><div class="card"><h2>games.html</h2><p><ul id='glist'><li>Example Game</li></ul></p></div>
+<div class="card" style="margin-top:12px">
+<h3>Add Game (admin)</h3>
+<input id="gameTitle" placeholder="Title"><input id="gameUrl" placeholder="URL"><input id="gameThumb" placeholder="Thumbnail URL"><button id="addGameBtn">Add</button>
+</div>
+<div id="glist"></div>
+<script>
+var db = firebase.database();
+document.getElementById('addGameBtn').addEventListener('click', function(){
+  var title=document.getElementById('gameTitle').value.trim(); var url=document.getElementById('gameUrl').value.trim(); var thumb=document.getElementById('gameThumb').value.trim();
+  if(!title||!url) return alert('title+url');
+  var key = title.replace(/\s+/g,'_').toLowerCase();
+  db.ref('games/'+key).set({ title:title, url:url, thumb:thumb, created:Date.now() });
+  alert('Added');
+});
+db.ref('games').on('value', function(snap){ var out=''; snap.forEach(function(ch){ var gg=ch.val(); out += '<div style="display:flex;gap:8px;align-items:center"><img src="'+(gg.thumb||'https://via.placeholder.com/64')+'" width=64 height=64><div><b>'+gg.title+'</b><div><a target="_blank" href="'+gg.url+'">Play</a></div></div></div>'; }); document.getElementById('glist').innerHTML=out; });
+</script>
+</main><button onclick='history.back()'>Back</button>
+</body></html></div></div></div></div></body></html>
